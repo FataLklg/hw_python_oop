@@ -10,27 +10,27 @@ class InfoMessage:
     distance: float
     speed: float
     calories: float
+    """Константа выводимого сообщения"""
+    MESSAGE: str = ('Тип тренировки: {training_type}; '
+                    'Длительность: {duration:.3f} ч.; '
+                    'Дистанция: {distance:.3f} км; '
+                    'Ср. скорость: {speed:.3f} км/ч; '
+                    'Потрачено ккал: {calories:.3f}.')
 
     def get_message(self):
-        MESSAGE: str = (f'Тип тренировки: {self.training_type}; '
-                        f'Длительность: {self.duration:.3f} ч.; '
-                        f'Дистанция: {self.distance:.3f} км; '
-                        f'Ср. скорость: {self.speed:.3f} км/ч; '
-                        f'Потрачено ккал: {self.calories:.3f}.')
-
-        return MESSAGE.format(**asdict(self))
+        return self.MESSAGE.format(**asdict(self))
 
 
 @dataclass
 class Training:
     """Базовый класс тренировки."""
-    action: int
-    duration: float  # Время в часах.
-    weight: float  # Вес в кг.
+    action: int  # Количество совершённых действий
+    duration: float  # Длительность тренировки в часах
+    weight: float  # Вес спортсмена в кг.
 
-    LEN_STEP: ClassVar[float] = 0.65
-    M_IN_KM: ClassVar[int] = 1000
-    COEFF_H_TO_MIN: ClassVar[int] = 60
+    LEN_STEP: ClassVar[float] = 0.65  # Длинна шага
+    M_IN_KM: ClassVar[int] = 1000  # Константа для переаода из м. в км.
+    COEFF_H_TO_MIN: ClassVar[int] = 60  # Константа для перевода ч. в м.
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
@@ -56,6 +56,7 @@ class Training:
 
 class Running(Training):
     """Тренировка: бег."""
+    """Константы для подсчёта калорий"""
     COEFF_CALORIE_1: ClassVar[int] = 18
     COEFF_CALORIE_2: ClassVar[int] = 20
 
@@ -68,8 +69,8 @@ class Running(Training):
 @dataclass
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-    height: float  # Рост в см.
-
+    height: float  # Рост спортсмена в см.
+    """Константы для подсчёта калорий"""
     COEFF_CALORIE_1: ClassVar[float] = 0.035
     COEFF_CALORIE_2: ClassVar[float] = 0.029
 
@@ -83,10 +84,11 @@ class SportsWalking(Training):
 @dataclass
 class Swimming(Training):
     """Тренировка: плавание."""
-    length_pool: float
-    count_pool: float
+    length_pool: float  # Длина бассейна в метрах
+    count_pool: float  # Сколько раз спортсмен переплыл бассейн
 
-    LEN_STEP: ClassVar[float] = 1.38
+    LEN_STEP: ClassVar[float] = 1.38  # Длина одного гребка
+    """Константы для подсчёта калорий"""
     COEFF_CALORIE_1: ClassVar[float] = 1.1
     COEFF_CALORIE_2: ClassVar[int] = 2
 

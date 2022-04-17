@@ -1,5 +1,5 @@
+from dataclasses import asdict, dataclass
 from typing import ClassVar, Dict, List, Type
-from dataclasses import dataclass, asdict
 
 
 @dataclass
@@ -11,11 +11,13 @@ class InfoMessage:
     speed: float
     calories: float
     """Константа выводимого сообщения"""
-    MESSAGE: str = ('Тип тренировки: {training_type}; '
-                    'Длительность: {duration:.3f} ч.; '
-                    'Дистанция: {distance:.3f} км; '
-                    'Ср. скорость: {speed:.3f} км/ч; '
-                    'Потрачено ккал: {calories:.3f}.')
+    MESSAGE: str = (
+        'Тип тренировки: {training_type}; '
+        'Длительность: {duration:.3f} ч.; '
+        'Дистанция: {distance:.3f} км; '
+        'Ср. скорость: {speed:.3f} км/ч; '
+        'Потрачено ккал: {calories:.3f}.'
+    )
 
     def get_message(self):
         return self.MESSAGE.format(**asdict(self))
@@ -42,16 +44,20 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        raise NotImplementedError(f'Количество затраченых калорий необходимо'
-                                  f'определить в {(type(self).__name__)}')
+        raise NotImplementedError(
+            f'Количество затраченых калорий необходимо'
+            f'определить в {(type(self).__name__)}'
+        )
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        return InfoMessage(type(self).__name__,
-                           self.duration,
-                           self.get_distance(),
-                           self.get_mean_speed(),
-                           self.get_spent_calories())
+        return InfoMessage(
+            type(self).__name__,
+            self.duration,
+            self.get_distance(),
+            self.get_mean_speed(),
+            self.get_spent_calories()
+        )
 
 
 class Running(Training):
@@ -61,9 +67,11 @@ class Running(Training):
     COEFF_CALORIE_2: ClassVar[int] = 20
 
     def get_spent_calories(self) -> float:
-        return ((self.COEFF_CALORIE_1 * self.get_mean_speed()
-                - self.COEFF_CALORIE_2) * self.weight / self.M_IN_KM
-                * (self.duration * self.COEFF_H_TO_MIN))
+        return (
+            (self.COEFF_CALORIE_1 * self.get_mean_speed()
+             - self.COEFF_CALORIE_2) * self.weight / self.M_IN_KM
+            * (self.duration * self.COEFF_H_TO_MIN)
+        )
 
 
 @dataclass
@@ -75,10 +83,12 @@ class SportsWalking(Training):
     COEFF_CALORIE_2: ClassVar[float] = 0.029
 
     def get_spent_calories(self) -> float:
-        return ((self.COEFF_CALORIE_1 * self.weight
-                + (self.get_distance()**2 // self.height)
-                * self.COEFF_CALORIE_2 * self.weight)
-                * (self.duration * self.COEFF_H_TO_MIN))
+        return (
+            (self.COEFF_CALORIE_1 * self.weight
+             + (self.get_distance()**2 // self.height)
+             * self.COEFF_CALORIE_2 * self.weight)
+            * (self.duration * self.COEFF_H_TO_MIN)
+        )
 
 
 @dataclass
@@ -93,12 +103,16 @@ class Swimming(Training):
     COEFF_CALORIE_2: ClassVar[int] = 2
 
     def get_mean_speed(self) -> float:
-        return (self.length_pool * self.count_pool
-                / self.M_IN_KM / self.duration)
+        return (
+            self.length_pool * self.count_pool
+            / self.M_IN_KM / self.duration
+        )
 
     def get_spent_calories(self) -> float:
-        return ((self.get_mean_speed() + self.COEFF_CALORIE_1)
-                * self.COEFF_CALORIE_2 * self.weight)
+        return (
+            (self.get_mean_speed() + self.COEFF_CALORIE_1)
+            * self.COEFF_CALORIE_2 * self.weight
+        )
 
 
 def read_package(workout_type: str, data: List[int]) -> Training:
@@ -108,10 +122,9 @@ def read_package(workout_type: str, data: List[int]) -> Training:
         'RUN': Running,
         'WLK': SportsWalking
     }
-    try:
-        return training_dict[workout_type](*data)
-    except KeyError:
+    if workout_type not in training_dict:
         raise KeyError(f'Тип {workout_type} отсутствует в словаре')
+    return training_dict[workout_type](*data)
 
 
 def main(training: Training) -> None:

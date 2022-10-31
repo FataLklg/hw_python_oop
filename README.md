@@ -36,3 +36,41 @@
     - Бег - `class Running`
     - Спортивная ходьба - `class SportsWalking`
     - Плавание - `class Swimming`
+
+### Как запустить проект:
+
+- ***Клонируйте репозиторий и перейдите в него в командной строке:***
+
+```
+git clone https://github.com/FataLklg/hw_python_oop.git
+```
+
+```
+cd hw_python_oop
+```
+
+- ***Cоздайте и активируйте виртуальное окружение:***
+
+```
+python -m venv venv
+```
+
+```
+source venv/Scripts/activate
+```
+
+- ***Обновите модуль pip и установите зависимости из файла requirements.txt:***
+
+```
+python -m pip install --upgrade pip
+```
+
+```
+pip install -r requirements.txt
+```
+
+- ***Запустите проект:***
+
+```
+python homework.py
+```
